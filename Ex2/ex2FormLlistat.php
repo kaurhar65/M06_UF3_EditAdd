@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 
-<?php 
+<?php
 
 $servername = "localhost";
 $username = "root";
@@ -20,6 +21,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+
 $sql = "SELECT * FROM productes";
 
 $result = $conn->query($sql);
@@ -27,8 +29,8 @@ $result = $conn->query($sql);
 $array = array();
 
 if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        array_push($array, array("id" =>$row["id"], "nom"=>$row["nom"]));            
+    while ($row = $result->fetch_assoc()) {
+        array_push($array, array("id" => $row["id"], "nom" => $row["nom"]));
     }
 } else {
     echo "0 results";
@@ -36,6 +38,7 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
+
 <body class="container mt-5 w-80">
     <div class="row">
         <div class="col">
@@ -45,10 +48,10 @@ $conn->close();
                 <div class="form-group mb-2">
                     <input type="text" class="form-control" id="nomProducte" name="nomProducte" placeholder="Nom" value="">
                 </div>
-                
-                <input type="hidden" name="addEdit" id="addEdit" value="0"/>
+
+                <input type="hidden" name="addEdit" id="addEdit" value="0" />
                 <button type="submit" class="btn btn-primary">Submit</button>
-            </form> 
+            </form>
         </div>
         <div class="col">
             <h2 class="mb-3">Llistat</h2>
@@ -62,17 +65,17 @@ $conn->close();
                         <th scope="col">Remove</th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
                     <?php
-                        for($i=0; $i<sizeof($array); $i++){
-                            echo '<tr>
+                    for ($i = 0; $i < sizeof($array); $i++) {
+                        echo '<tr>
                                         <th scope="row">' . $array[$i]["id"] . '</th>
                                         <td>' . $array[$i]["nom"] . '</td>
                                         <td><p idProd="' . $array[$i]["id"] . '" class="btnEdit btn btn-outline-info">Edit</p></td>
-                                        <td><a href="" class="btn btn-outline-danger">Remove</a></td>
+                                        <td><a href="ex2AddEdit.php?idProdDel=' . $array[$i]["id"] . '" class="btn btn-outline-danger">Remove</a></td>
                                     </tr>';
-                        }  
+                    }
                     ?>
                 </tbody>
             </table>
@@ -81,28 +84,50 @@ $conn->close();
 
     <script>
         let btnEdit = document.querySelectorAll(".btnEdit");
-        btnEdit.forEach(el=>{
-            el.addEventListener("click", function(){
+        btnEdit.forEach(el => {
+            el.addEventListener("click", function() {
 
                 let formData = new FormData();
                 formData.append("id", this.getAttribute("idProd"));
 
                 let options = {
-                        method: 'POST',
-                        body: formData
-                    }
+                    method: 'POST',
+                    body: formData
+                }
 
                 fetch("getProducte.php", options)
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    document.getElementById("nomProducte").value = data.nom;
-                    document.getElementById("addEdit").value = data.addEdit;
-                })
-                .catch((error) => {});
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        document.getElementById("nomProducte").value = data.nom;
+                        document.getElementById("addEdit").value = data.addEdit;
+                    })
+                    .catch((error) => {});
+
+            })
+        })
+
+        let deleteButton = document.querySelectorAll(".btnDelete");
+        deleteButton.forEach(el => {
+            el.addEventListener("click", function() {
+
+                let formData = new FormData();
+                formData.append("id", this.getAttribute("idProdDel"));
+                let options = {
+                    method: 'POST',
+                    body: formData
+                }
+
+                fetch("getProducte.php", options)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert("Eliminado");
+                    })
+                    .catch((error) => {});
 
             })
         })
     </script>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 <?php
 
-if(isset($_POST["id"]) && !empty($_POST["id"])){
+if (isset($_POST["id"]) && !empty($_POST["id"])) {
     $servername = "localhost";
     $username = "root";
     $password = "";
@@ -22,15 +22,11 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         $object = new stdClass();
         $object->nom = $row["nom"];
         $object->addEdit = $row["id"];
-       
-        echo json_encode($object);
 
+        echo json_encode($object);
     } else {
         echo "0 results";
     }
 
     $conn->close();
 }
-
-
-?>

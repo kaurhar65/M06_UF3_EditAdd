@@ -5,9 +5,7 @@
     $password = "";
     $dbname = "product";
 
-    // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
@@ -30,6 +28,17 @@
 
         $conn->close();
 
+    }
+
+    if(isset($_GET["idProdDel"]) && !empty($_GET["idProdDel"])) {
+    
+        $sql = "DELETE FROM productes WHERE id =" . $_GET["idProdDel"];
+        
+        if ($conn->query($sql) === TRUE) {
+            echo "Deleted";
+        } else {
+            echo "Error: " . $conn->error;
+        }
     }
     
     header('Location: ex2FormLlistat.php');
